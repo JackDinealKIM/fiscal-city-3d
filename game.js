@@ -233,12 +233,12 @@
     root.innerHTML = '<div class="backdrop"></div>' + html;
     root.classList.add('open');
     S.modal = name || 'modal';
-    const close = root.querySelector('[data-close]');
-    if (close) close.addEventListener('click', () => {
+    const closes = root.querySelectorAll('[data-close]');
+    if (closes.length) closes.forEach(el => el.addEventListener('click', () => {
       closeModal();
       // 모바일에서는 예산 패널을 바로 열어 결산 버튼을 보여준다
       if (window.innerWidth <= 900 && name === 'guide') $('#panel').classList.add('open');
-    });
+    }));
   }
   function closeModal() {
     const root = $('#modalRoot');
