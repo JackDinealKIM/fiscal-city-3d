@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1120">
+<title>재정도시 — 나라살림 5년 | 3D 재정교육 시뮬레이터</title>
+<meta name="description" content="예산·세금·국채를 직접 배분하며 배우는 Three.js 3D 재정교육 웹게임. 2026년 대한민국 확정예산 데이터 기반.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ffc85c'/%3E%3Ctext x='32' y='45' font-size='38' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%232a1b00'%3E%E2%82%A9%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<div id="app">
+
+  <canvas id="gl" aria-label="3D 재정도시"></canvas>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="vignette"></div>
+
+  <header id="hud">
+    <div class="hud-side left">
+      <div class="brand">
+        <span class="mark">₩</span>
+        <div class="brand-txt"><b>재정도시</b><small>나라살림 5년 · 3D 재정교육</small></div>
+      </div>
+      <div class="yearchip">
+        <b id="yearLabel">2026</b>
+        <span id="yearStep">회계연도 1 / 5</span>
+      </div>
+    </div>
+
+    <div class="gauges" id="gauges"></div>
+
+    <div class="hud-side right">
+      <button id="btnGuide" class="btn ghost" type="button">도움말</button>
+      <button id="btnSound" class="btn ghost icon" type="button" aria-pressed="true" title="소리 켜기/끄기">🔊</button>
+      <button id="btnOpenPanel" class="btn primary only-mobile" type="button">예산 편성</button>
+    </div>
+  </header>
+
+  <aside id="panel" aria-label="예산 편성 패널">
+    <div class="panel-grip" id="panelGrip"></div>
+
+    <div class="panel-head">
+      <h2>예산 편성</h2>
+      <div class="panel-head-right">
+        <span class="fiscal-year" id="panelYear">2026 회계연도</span>
+        <button id="btnClosePanel" class="btn tiny ghost only-mobile" type="button">닫기</button>
+      </div>
+    </div>
+
+    <div class="money-card">
+      <div class="money-row">
+        <div class="money-item"><span>세입 (들어올 돈)</span><b id="revTotal">10.00조</b></div>
+        <div class="money-item"><span>세출 (쓸 돈)</span><b id="spendTotal">10.00조</b></div>
+      </div>
+      <div class="balance-bar"><i id="balanceFill"></i><u id="balanceMark"></u></div>
+      <div class="money-note" id="balanceNote">세입과 세출이 균형입니다.</div>
+      <div class="money-actions">
+        <button id="btnQuick" class="chip" type="button">정부 비중으로 채우기</button>
+        <button id="btnReset" class="chip" type="button">초기화</button>
+      </div>
+    </div>
+
+    <div class="sector-list" id="sectorList"></div>
+
+    <div class="panel-foot">
+      <div class="lever-box">
+        <div class="lever-head">
+          <span>세율 (지방세 부담)</span><b id="taxValue">100%</b>
+        </div>
+        <input id="taxRange" type="range" min="60" max="140" step="2" value="100" aria-label="세율">
+      </div>
+      <div class="lever-box">
+        <div class="lever-head">
+          <span>국고보조 (중앙정부 지원)</span><b id="grantValue">1.20조</b>
+        </div>
+        <input id="grantRange" type="range" min="0" max="25" step="1" value="12" aria-label="국고보조">
+      </div>
+
+      <button id="btnSettle" class="btn settle" type="button">
+        <span>결산하고 다음 해로</span><i>→</i>
+      </button>
+      <p class="foot-hint">예산은 한정되어 있습니다. 하나를 늘리면 다른 하나가 줄어듭니다.</p>
+    </div>
+  </aside>
+
+  <div id="ticker" role="status" aria-live="polite">
+    <span class="ticker-tag">오늘의 재정 뉴스</span>
+    <div class="ticker-view"><div id="tickerTrack"></div></div>
+  </div>
+
+  <div id="toast"></div>
+  <div id="modalRoot"></div>
+  <div id="loading"><div class="load-inner"><span class="load-mark">₩</span><p>재정도시를 짓고 있습니다…</p><i></i></div></div>
+</div>
+
+<script src="three.min.js"></script>
+<script src="data.js"></script>
+<script src="city3d.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
